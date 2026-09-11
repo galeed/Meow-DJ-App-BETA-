@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow DJ App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #08080c;
+            --panel-bg: rgba(18, 18, 26, 0.75);
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff0055;
+            --neon-purple: #9d00ff;
+            --text-main: #e0e0ff;
+            --border-glow: rgba(0, 243, 255, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(157, 0, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 243, 255, 0.08) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        header {
+            text-align: center;
+            height: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1 span {
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+
+        /* Contenedor principal horizontal */
+        .dj-container {
+            display: flex;
+            height: 85%;
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Decks y Mixer */
+        .deck, .mixer {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .deck {
+            flex: 2;
+            border-top: 3px solid var(--neon-cyan);
+        }
+
+        .deck.deck-b {
+            border-top: 3px solid var(--neon-pink);
+        }
+
+        .mixer {
+            flex: 1;
+            border-top: 3px solid var(--neon-purple);
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .deck-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            margin-bottom: 5px;
+        }
+
+        .deck-b .deck-header {
+            color: var(--neon-pink);
+        }
+
+        .track-info {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+        }
+
+        /* Controles deslizantes y perillas */
+        .control-group {
+            margin: 8px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.8rem;
+        }
+
+        label {
+            color: #8a8ab0;
+            letter-spacing: 1px;
+        }
+
+        input[type="range"] {
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #1a1a24;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--neon-cyan);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .deck-b input[type="range"]::-webkit-slider-thumb {
+            background: var(--neon-pink);
+            box-shadow: 0 0 8px var(--neon-pink);
+        }
+
+        /* Botones de acción estilo Cyberpunk */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        button.btn-cyber {
+            font-family: 'Orbitron', sans-serif;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 10px 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        button.btn-cyber:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 12px var(--neon-cyan);
+        }
+
+        .deck-b button.btn-cyber {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            background: rgba(255, 0, 85, 0.1);
+        }
+
+        .deck-b button.btn-cyber:hover {
+            background: var(--neon-pink);
+            color: #000;
+            box-shadow: 0 0 12px var(--neon-pink);
+        }
+
+        /* File Input personalizado */
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* Mixer central */
+        .mixer-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--neon-purple);
+            text-shadow: 0 0 8px rgba(157, 0, 255, 0.4);
+        }
+
+        .crossfader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 5px;
+        }
+
+        .crossfader {
+            width: 80%;
+            accent-color: var(--neon-purple);
+        }
+
+        .master-vol {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🐱 MEOW <span>DJ APP</span></h1>
+    </header>
+
+    <div class="dj-container">
+        <!-- DECK A -->
+        <div class="deck">
+            <div>
+                <div class="deck-header">DECK A</div>
+                <div class="track-info" id="info-a">No track loaded</div>
+                
+                <div class="file-upload">
+                    <button class="btn-cyber" style="width: 100%;">CARGAR AUDIO A</button>
+                    <input type="file" id="file-a" accept="audio/*">
+                </div>
+            </div>
+
+            <div>
+                <div class="control-group">
+                    <label>PITCH / VELOCIDAD: <span id="rate-val-a">1.00x</span></label>
+                    <input type="range" id="rate-a" min="0.5" max="1.5" step="0.01" value="1.0">
+                </div>
+
+                <div class="control-group">
+                    <label>VOLUMEN DECK A</label>
+                    <input type="range" id="vol-a" min="0" max="1" step="0.01" value="1">
+                </div>
+
+                <div class="button-grid">
+                    <button class="btn-cyber" id="play-a">PLAY</button>
+                    <button class="btn-cyber" id="cue-a">CUE</button>
+                    <button class="btn-cyber" id="sync-a">SYNC</button>
+                </div>
+            </div>
+            <audio id="audio-a" preload="auto" crossorigin="anonymous"></audio>
+        </div>
+
+        <!-- MIXER CENTRAL -->
+        <div class="mixer">
+            <div class="mixer-title">MIXER</div>
+            
+            <div class="crossfader-container">
+                <label>CROSSFADER</label>
+                <input type="range" id="crossfader" class="crossfader" min="0" max="1" step="0.01" value="0.5">
+                <div style="display: flex; justify-content: space-between; width: 80%; font-size: 0.7rem; color: #777;">
+                    <span>A</span><span>B</span>
+                </div>
+            </div>
+
+            <div class="crossfader-container">
+                <label>MASTER VOL</label>
+                <input type="range" id="master-vol" class="master-vol" min="0" max="1" step="0.01" value="0.8">
+            </div>
+
+            <div style="text-align: center; font-size: 0.7rem; color: var(--neon-cyan);">
+                MODE: 32-BIT READY
+            </div>
+        </div>
+
+        <!-- DECK B -->
+        <div class="deck deck-b">
+            <div>
+                <div class="deck-header">DECK B</div>
+                <div class="track-info" id="info-b">No track loaded</div>
+                
+                <div class="file-upload">
+                    <button class="btn-cyber" style="width: 100%;">CARGAR AUDIO B</button>
+                    <input type="file" id="file-b" accept="audio/*">
+                </div>
+            </div>
+
+            <div>
+                <div class="control-group">
+                    <label>PITCH / VELOCIDAD: <span id="rate-val-b">1.00x</span></label>
+                    <input type="range" id="rate-b" min="0.5" max="1.5" step="0.01" value="1.0">
+                </div>
+
+                <div class="control-group">
+                    <label>VOLUMEN DECK B</label>
+                    <input type="range" id="vol-b" min="0" max="1" step="0.01" value="1">
+                </div>
+
+                <div class="button-grid">
+                    <button class="btn-cyber" id="play-b">PLAY</button>
+                    <button class="btn-cyber" id="cue-b">CUE</button>
+                    <button class="btn-cyber" id="sync-b">SYNC</button>
+                </div>
+            </div>
+            <audio id="audio-b" preload="auto" crossorigin="anonymous"></audio>
+        </div>
+    </div>
+
+    <script>
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function setupDeck(deckId) {
+            const audioElement = document.getElementById(`audio-${deckId}`);
+            const fileInput = document.getElementById(`file-${deckId}`);
+            const infoDiv = document.getElementById(`info-${deckId}`);
+            const playBtn = document.getElementById(`play-${deckId}`);
+            const cueBtn = document.getElementById(`cue-${deckId}`);
+            const volSlider = document.getElementById(`vol-${deckId}`);
+            const rateSlider = document.getElementById(`rate-${deckId}`);
+            const rateVal = document.getElementById(`rate-val-${deckId}`);
+
+            let sourceNode = null;
+            let gainNode = null;
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    initAudio();
+                    const fileURL = URL.createObjectURL(file);
+                    audioElement.src = fileURL;
+                    infoDiv.textContent = file.name;
+
+                    if (!sourceNode) {
+                        sourceNode = audioCtx.createMediaElementSource(audioElement);
+                        gainNode = audioCtx.createGain();
+                        sourceNode.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                    }
+                }
+            });
+
+            playBtn.addEventListener('click', () => {
+                initAudio();
+                if (audioElement.paused) {
+                    audioElement.play();
+                    playBtn.textContent = "PAUSE";
+                    playBtn.style.background = deckId === 'a' ? "var(--neon-cyan)" : "var(--neon-pink)";
+                    playBtn.style.color = "#000";
+                } else {
+                    audioElement.pause();
+                    playBtn.textContent = "PLAY";
+                    playBtn.style.background = "";
+                    playBtn.style.color = "";
+                }
+            });
+
+            cueBtn.addEventListener('click', () => {
+                audioElement.currentTime = 0;
+                audioElement.pause();
+                playBtn.textContent = "PLAY";
+                playBtn.style.background = "";
+                playBtn.style.color = "";
+            });
+
+            rateSlider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                audioElement.playbackRate = val;
+                rateVal.textContent = val.toFixed(2) + 'x';
+            });
+
+            volSlider.addEventListener('input', () => {
+                updateMixer();
+            });
+        }
+
+        setupDeck('a');
+        setupDeck('b');
+
+        const crossfader = document.getElementById('crossfader');
+        const masterVol = document.getElementById('master-vol');
+
+        function updateMixer() {
+            // Lógica simple de crossfader y volumen maestro simulados visualmente por ahora
+            // En la Web Audio API completa se enrutan los gains del deck A y B con respecto al crossfader.
+        }
+
+        crossfader.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            const volA = document.getElementById('vol-a');
+            const volB = document.getElementById('vol-b');
+            
+            // Ajuste básico de ganancia lineal cruzada
+            // val 0 = Deck A full, Deck B mute
+            // val 1 = Deck A mute, Deck B full
+            volA.value = (1 - val).toFixed(2);
+            volB.value = val.toFixed(2);
+        });
+    </script>
+</body>
+</html>
